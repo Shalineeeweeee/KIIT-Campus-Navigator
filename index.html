@@ -25,8 +25,8 @@
     <aside class="sidebar">
       <section class="hero-card">
         <span class="eyebrow">KIIT CAMPUS</span>
-        <h2>Find your room</h2>
-        <p>Shortest walking route across Ground, 1st, 2nd and 3rd floors.</p>
+        <h2>Where are you going?</h2>
+        <p>Choose where you are and where you need to go. We’ll map a route through the modeled campus corridors.</p>
       </section>
 
       <section class="panel route-panel">
@@ -38,13 +38,14 @@
         <label class="field-label" for="sourceSearch">From</label>
         <div class="search-select">
           <input id="sourceSearch" type="search" placeholder="Search room, gate, toilet..." autocomplete="off">
-          <select id="sourceSelect" size="6"></select>
+          <select id="sourceSelect" aria-label="Choose starting point"><option value="">Choose starting point…</option></select>
         </div>
 
+        <button id="swapLocations" class="swap-btn" type="button" aria-label="Swap starting point and destination">↕ Swap locations</button>
         <label class="field-label" for="destSearch">To</label>
         <div class="search-select">
           <input id="destSearch" type="search" placeholder="Search destination..." autocomplete="off">
-          <select id="destSelect" size="6"></select>
+          <select id="destSelect" aria-label="Choose destination"><option value="">Choose destination…</option></select>
         </div>
 
         <div class="route-modes">
@@ -53,9 +54,9 @@
           <button class="mode-btn" data-mode="accessible">Accessible route</button>
         </div>
 
-        <button id="findRoute" class="primary-btn">Find route <span>→</span></button>
+        <button id="findRoute" class="primary-btn">Find my route <span>→</span></button>
 
-        <div class="sample-title">Quick demonstrations</div>
+        <div class="sample-title">Try a demo route</div>
         <div class="sample-grid">
           <button class="sample-btn" data-source="B116" data-dest="B117">B116 → B117</button>
           <button class="sample-btn" data-source="ENTRY_A" data-dest="A101">Entry Gate → A101</button>
@@ -106,8 +107,8 @@
     <section class="map-area">
       <div class="map-toolbar">
         <div>
-          <span class="map-kicker">GRAPH FLOOR PLANS</span>
-          <h2 id="mapTitle">All floors · blueprint view</h2>
+          <span class="map-kicker">YOUR CAMPUS MAP</span>
+          <h2 id="mapTitle">Campus map</h2>
         </div>
         <div class="map-controls">
           <button id="zoomOut" class="round-btn">−</button>

@@ -290,15 +290,20 @@ function populateSearches(){
   renderSelect($("#destSelect"),all,$("#destSearch").value);
 }
 function renderSelect(select,nodes,filter){
-  const f=String(filter||"").toLowerCase();
+  const f=String(filter||"").trim().toLowerCase();
   const current=select.value;
   select.innerHTML="";
+  const placeholder=document.createElement("option");
+  placeholder.value="";
+  placeholder.textContent=f ? "Choose a matching result…" : (select.id==="sourceSelect" ? "Choose starting point…" : "Choose destination…");
+  select.appendChild(placeholder);
   nodes.filter(n=>`${n.label} ${n.id} ${n.type} ${floorLabel(n.floor)}`.toLowerCase().includes(f)).forEach(n=>{
     const o=document.createElement("option");
     o.value=n.id;o.textContent=`${n.label} · ${floorLabel(n.floor)}`;
     select.appendChild(o);
   });
   if([...select.options].some(o=>o.value===current)) select.value=current;
+  else select.value="";
 }
 
 const NS="http://www.w3.org/2000/svg";
@@ -520,9 +525,17 @@ function renderRouteSummary(routes,source,target){
 }
 
 function setupSearch(inputId,selectId){
-  $(inputId).addEventListener("input",()=>renderSelect($(selectId),campus.nodes,$(inputId).value));
+  $(inputId).addEventListener("input",()=>{
+    renderSelect($(selectId),campus.nodes,$(inputId).value);
+    const query=$(inputId).value.trim().toLowerCase();
+    const exact=campus.nodes.find(n=>n.id.toLowerCase()===query || n.label.toLowerCase()===query);
+    if(exact) $(selectId).value=exact.id;
+  });
   $(inputId).addEventListener("focus",()=>renderSelect($(selectId),campus.nodes,$(inputId).value));
-  $(selectId).addEventListener("change",()=>$(inputId).value=nodeLabel($(selectId).value));
+  $(selectId).addEventListener("change",()=>{
+    const id=$(selectId).value;
+    if(id) $(inputId).value=nodeLabel(id);
+  });
 }
 
 function refreshAdminJson(){ $("#jsonEditor").value=JSON.stringify(campus,null,2); }
@@ -559,6 +572,14 @@ function wire(){
     btn.classList.add("active"); currentMode=btn.dataset.mode;
   }));
   $("#findRoute").addEventListener("click",findAndRender);
+  $("#swapLocations").addEventListener("click",()=>{
+    const source=$("#sourceSelect").value, target=$("#destSelect").value;
+    const sourceText=$("#sourceSearch").value, targetText=$("#destSearch").value;
+    $("#sourceSearch").value=targetText; $("#destSearch").value=sourceText;
+    populateSearches();
+    $("#sourceSelect").value=target; $("#destSelect").value=source;
+    if(source && target) findAndRender();
+  });
   $("#sourceSelect").addEventListener("dblclick",findAndRender);
   $("#destSelect").addEventListener("dblclick",findAndRender);
   $$(".sample-btn").forEach(btn=>btn.addEventListener("click",()=>{
@@ -569,9 +590,19 @@ function wire(){
     findAndRender();
   }));
   $("#resetBtn").addEventListener("click",()=>{
-    $("#sourceSearch").value="";$("#destSearch").value="";
-    populateSearches();drawMaps();
-    $("#routeSummary").innerHTML=`<div class="empty-state"><div class="empty-icon">⌖</div><p>Choose a source and destination to calculate a route.</p></div>`;
+    // Clear both the visible search fields AND the underlying selected values.
+    // populateSearches() intentionally preserves valid selections, so clear the
+    // select values again after rebuilding the options.
+    $("#sourceSearch").value = "";
+    $("#destSearch").value = "";
+    populateSearches();
+    $("#sourceSelect").value = "";
+    $("#destSelect").value = "";
+    currentMode = "shortest";
+    $$(".mode-btn").forEach(btn => btn.classList.toggle("active", btn.dataset.mode === "shortest"));
+    drawMaps();
+    $("#routeSummary").innerHTML = `<div class="empty-state"><div class="empty-icon">⌖</div><p>Choose a starting point and destination, then select Find my route.</p></div>`;
+    $("#sourceSearch").focus();
   });
   $("#adminBtn").addEventListener("click",openAdmin);
   $("#closeAdmin").addEventListener("click",closeAdmin);

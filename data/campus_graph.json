@@ -1,0 +1,49 @@
+
+{
+  "metadata": {
+    "building": "KIIT Block A and B",
+    "unit": "steps",
+    "description": "Campus walking graph using measured distances",
+    "verified": false
+  },
+  "nodes": [
+    {
+      "id": "B005",
+      "label": "Room B005",
+      "type": "room",
+      "floor": "ground"
+    },
+    {
+      "id": "STAIRS_B",
+      "label": "Stairs near B005",
+      "type": "stairs",
+      "floor": "ground"
+    },
+    {
+      "id": "B116",
+      "label": "Room B116",
+      "type": "room",
+      "floor": "first"
+    },
+    {
+      "id": "B117",
+      "label": "Room B117",
+      "type": "room",
+      "floor": "first"
+    }
+  ],
+  "edges": [
+    {
+      "from": "B005",
+      "to": "STAIRS_B",
+      "weight": 10,
+      "source": "user measurement"
+    },
+    {
+      "from": "B116",
+      "to": "B117",
+      "weight": 11,
+      "source": "user measurement"
+    }
+  ]
+}
