@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KIIT Block A & B — Indoor Navigation</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark">KIIT</div>
+      <div>
+        <h1>Indoor Navigation</h1>
+        <p>School of Computer Science & Engineering · Block A & B</p>
+      </div>
+    </div>
+    <div class="top-actions">
+      <button id="adminBtn" class="ghost-btn">⚙ Admin</button>
+      <button id="resetBtn" class="ghost-btn">↺ Reset route</button>
+    </div>
+  </header>
+
+  <main class="app-shell">
+    <aside class="sidebar">
+      <section class="hero-card">
+        <span class="eyebrow">KIIT CAMPUS</span>
+        <h2>Find your room</h2>
+        <p>Shortest walking route across Ground, 1st, 2nd and 3rd floors.</p>
+      </section>
+
+      <section class="panel route-panel">
+        <div class="panel-title">
+          <span>Route planner</span>
+          <span class="status-dot"></span>
+        </div>
+
+        <label class="field-label" for="sourceSearch">From</label>
+        <div class="search-select">
+          <input id="sourceSearch" type="search" placeholder="Search room, gate, toilet..." autocomplete="off">
+          <select id="sourceSelect" size="6"></select>
+        </div>
+
+        <label class="field-label" for="destSearch">To</label>
+        <div class="search-select">
+          <input id="destSearch" type="search" placeholder="Search destination..." autocomplete="off">
+          <select id="destSelect" size="6"></select>
+        </div>
+
+        <div class="route-modes">
+          <button class="mode-btn active" data-mode="shortest">Shortest route</button>
+          <button class="mode-btn" data-mode="alternatives">Alternative routes</button>
+          <button class="mode-btn" data-mode="accessible">Accessible route</button>
+        </div>
+
+        <button id="findRoute" class="primary-btn">Find route <span>→</span></button>
+
+        <div class="sample-title">Quick demonstrations</div>
+        <div class="sample-grid">
+          <button class="sample-btn" data-source="B116" data-dest="B117">B116 → B117</button>
+          <button class="sample-btn" data-source="ENTRY_A" data-dest="A101">Entry Gate → A101</button>
+          <button class="sample-btn" data-source="A203" data-dest="TOILET_2_A_LADIES_N">A203 → Ladies Toilet</button>
+        </div>
+      </section>
+
+      <section id="resultPanel" class="panel result-panel">
+        <div class="panel-title">Route summary</div>
+        <div id="routeSummary" class="empty-state">
+          <div class="empty-icon">⌖</div>
+          <p>Choose a source and destination to calculate a route.</p>
+        </div>
+      </section>
+
+      <section class="panel legend-panel">
+        <div class="panel-title">Map legend</div>
+        <div class="legend">
+          <span><i class="legend-dot room"></i> Room</span>
+          <span><i class="legend-dot toilet"></i> Toilet</span>
+          <span><i class="legend-dot entrance"></i> Entrance</span>
+          <span><i class="legend-dot stair"></i> Stairs</span>
+          <span><i class="legend-dot junction"></i> Junction</span>
+          <span><i class="legend-line"></i> Active route</span>
+        </div>
+      </section>
+
+      <section id="adminPanel" class="panel admin-panel hidden">
+        <div class="panel-title">
+          <span>Admin / map data</span>
+          <button id="closeAdmin" class="icon-btn">×</button>
+        </div>
+        <p class="admin-note">The map is stored as editable JSON. Change node labels, coordinates, node types, edge distances or connections, then import the JSON back into this page.</p>
+        <div class="admin-actions">
+          <button id="exportJson" class="secondary-btn">Export JSON</button>
+          <label class="secondary-btn file-btn">Import JSON
+            <input id="importJson" type="file" accept=".json" hidden>
+          </label>
+          <button id="resetData" class="secondary-btn danger">Restore built-in map</button>
+        </div>
+        <label class="field-label" for="jsonEditor">Map JSON</label>
+        <textarea id="jsonEditor" spellcheck="false"></textarea>
+        <button id="applyJson" class="primary-btn">Apply edited map</button>
+        <div id="adminMessage" class="admin-message"></div>
+      </section>
+    </aside>
+
+    <section class="map-area">
+      <div class="map-toolbar">
+        <div>
+          <span class="map-kicker">GRAPH FLOOR PLANS</span>
+          <h2 id="mapTitle">All floors · blueprint view</h2>
+        </div>
+        <div class="map-controls">
+          <button id="zoomOut" class="round-btn">−</button>
+          <span id="zoomValue">100%</span>
+          <button id="zoomIn" class="round-btn">+</button>
+        </div>
+      </div>
+
+      <div id="mapStack" class="map-stack"></div>
+    </section>
+  </main>
+
+  <template id="floorTemplate">
+    <article class="floor-card">
+      <div class="floor-head">
+        <div>
+          <span class="floor-label"></span>
+          <strong class="floor-name"></strong>
+        </div>
+        <span class="floor-route-badge hidden">Route uses this floor</span>
+      </div>
+      <div class="floor-map">
+        <svg class="graph-svg" viewBox="0 0 1200 850" preserveAspectRatio="xMidYMid meet"></svg>
+      </div>
+    </article>
+  </template>
+
+  <script src="app.js"></script>
+</body>
+</html>
